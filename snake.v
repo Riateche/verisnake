@@ -34,6 +34,8 @@ wire [7:0] next_y_plus_one = current_y + {6'b0, dy};
 reg [1:0] dx;
 reg [1:0] dy;
 
+reg [4:0] field [Y_MAX-1:0] [X_MAX-1:0];
+
 always @(posedge clk) begin
     if (reset) begin
         counter <= 0;
@@ -73,6 +75,10 @@ always @(posedge clk) begin
             up_pressed <= 0;
             down_pressed <= 0;
 
+            field[current_y[4:0]][current_x[4:0]][4:4] = 1;
+            field[current_y[4:0]][current_x[4:0]][3:2] = dx;
+            field[current_y[4:0]][current_x[4:0]][1:0] = dy;
+
             if (next_x_plus_one == 0)
                 current_x <= 0;
             else if (next_x_plus_one == X_MAX + 1)
@@ -92,11 +98,12 @@ always @(posedge clk) begin
 end
 
 always @(posedge video_clk) begin
-    if (current_x == video_x && current_y == video_y) begin
+    if (current_x == video_x && current_y == video_y)
         video_output = 24'h_a000a0;
-    end else begin
+    else if (field[video_y[4:0]][video_x[4:0]][4])
+        video_output = 24'h_202020;
+    else
         video_output = 24'h_ffffff;
-    end
 end
 
 endmodule
