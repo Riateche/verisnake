@@ -25,7 +25,7 @@ HEADERS += \
 FORMS += \
     Widget.ui
 
-OTHER_FILES += snake.v
+OTHER_FILES += snake.sv
 
 CONFIG += link_pkgconfig
 PKGCONFIG += verilator
@@ -37,7 +37,7 @@ SOURCES += \
     /usr/share/verilator/include/verilated.cpp
 
 verilator.target = $$OUT_PWD/verilator_obj_dir/Vsnake.cpp
-verilator.depends = $$PWD/snake.v
-verilator.commands = verilator -cc $$PWD/snake.v -Mdir $$OUT_PWD/verilator_obj_dir
+verilator.depends = $$PWD/snake.sv
+verilator.commands = verilator -cc $$PWD/snake.sv -Mdir $$OUT_PWD/verilator_obj_dir
 PRE_TARGETDEPS = $$OUT_PWD/verilator_obj_dir/Vsnake.cpp
 QMAKE_EXTRA_TARGETS += verilator
