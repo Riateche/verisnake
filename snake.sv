@@ -24,15 +24,13 @@ reg [3:0] counter;
 localparam X_MAX = 20;
 localparam Y_MAX = 30;
 
-localparam DELTA_LOW = 0;
-localparam DELTA_NEUTRAL = 1;
-localparam DELTA_HIGH = 2;
+typedef enum bit [1:0] { LOW, NEUTRAL, HIGH } Delta;
 
 wire [7:0] next_x_plus_one = current_x + {6'b0, dx};
 wire [7:0] next_y_plus_one = current_y + {6'b0, dy};
 
-reg [1:0] dx;
-reg [1:0] dy;
+Delta dx;
+Delta dy;
 
 reg [4:0] field [Y_MAX-1:0] [X_MAX-1:0];
 
@@ -45,8 +43,8 @@ always @(posedge clk) begin
         right_pressed <= 0;
         up_pressed <= 0;
         down_pressed <= 0;
-        dx <= DELTA_LOW;
-        dy <= DELTA_NEUTRAL;
+        dx <= LOW;
+        dy <= NEUTRAL;
     end else begin
         if (left) left_pressed <= 1;
         if (right) right_pressed <= 1;
@@ -55,18 +53,18 @@ always @(posedge clk) begin
 
         counter <= counter + 1;
 
-        if (left_pressed && (dx != DELTA_HIGH)) begin
-            dx <= DELTA_LOW;
-            dy <= DELTA_NEUTRAL;
-        end else if (right_pressed && (dx != DELTA_LOW)) begin
-            dx <= DELTA_HIGH;
-            dy <= DELTA_NEUTRAL;
-        end else if (up_pressed && (dy != DELTA_HIGH)) begin
-            dx <= DELTA_NEUTRAL;
-            dy <= DELTA_LOW;
-        end else if (down_pressed && (dy != DELTA_LOW)) begin
-            dx <= DELTA_NEUTRAL;
-            dy <= DELTA_HIGH;
+        if (left_pressed && (dx != HIGH)) begin
+            dx <= LOW;
+            dy <= NEUTRAL;
+        end else if (right_pressed && (dx != LOW)) begin
+            dx <= HIGH;
+            dy <= NEUTRAL;
+        end else if (up_pressed && (dy != HIGH)) begin
+            dx <= NEUTRAL;
+            dy <= LOW;
+        end else if (down_pressed && (dy != LOW)) begin
+            dx <= NEUTRAL;
+            dy <= HIGH;
         end
 
         if (counter == 0) begin
